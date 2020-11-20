@@ -163,6 +163,10 @@ public class JThreads
         {
             max_elapsed_max = Math.max(jt.elapsed_max, max_elapsed_max);
             max_diff_elapsed_max = Math.max(jt.diff_elapsed_max, max_diff_elapsed_max);
+        }
+
+        for (JThread jt : threads)
+        {
             len_name = Math.max(jt.name.length(), len_name);
 
             String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
