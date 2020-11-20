@@ -127,7 +127,7 @@ public class JThreads
             }
             else
             {
-                jt.diff_cpu = jtp.cpu - jtp.cpu;
+                jt.diff_cpu = jt.cpu - jtp.cpu;
                 jt.diff_elapsed = jt.elapsed - jtp.elapsed;
                 jt.diff_elapsed_max = jt.elapsed_max - jtp.elapsed_max;
             }
@@ -152,20 +152,20 @@ public class JThreads
     {
         List<String> show = new ArrayList<String>();
 
-        double max_elapsed = 0;
-        double max_diff_elapsed = 0;
-        int len_name = 0;
+        double max_elapsed_max = 0;
+        double max_diff_elapsed_max = 0;
+        int len_name = "THREADS, CPU cores usage (%):".length();
         int len_c1 = "HIST".length();
         int len_c2 = "CURR".length();
         int len_c3 = "COUNT".length();
 
         for (JThread jt : threads)
         {
-            max_elapsed = Math.max(jt.elapsed, max_elapsed);
-            max_diff_elapsed = Math.max(jt.diff_elapsed, max_diff_elapsed);
+            max_elapsed_max = Math.max(jt.elapsed_max, max_elapsed_max);
+            max_diff_elapsed_max = Math.max(jt.diff_elapsed_max, max_diff_elapsed_max);
             len_name = Math.max(jt.name.length(), len_name);
 
-            String s = String.format("%.1f", 100.0 * jt.cpu / max_elapsed);
+            String s = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
             len_c1 = Math.max(s.length(), len_c1);
 
             if (prev != null)
@@ -201,7 +201,7 @@ public class JThreads
 
                 show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %s",
                                        jt.name,
-                                       100.0 * jt.cpu / max_elapsed,
+                                       100.0 * jt.cpu / max_elapsed_max,
                                        count));
             }
         }
@@ -215,7 +215,7 @@ public class JThreads
 
                 show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %" + len_c2 + ".1f  %s",
                                        jt.name,
-                                       100.0 * jt.cpu / max_elapsed,
+                                       100.0 * jt.cpu / max_elapsed_max,
                                        100.0 * jt.diff_cpu / jt.diff_elapsed,
                                        count));
             }
