@@ -53,6 +53,9 @@ public class JThread
     // "Reference Handler" #2 daemon prio=10 os_prio=-5 cpu=1.15ms elapsed=806.66s tid=0x00007f14f05a9950 nid=0x2738 waiting on condition  [0x00007f4e14b34000]
     public void parse(String line) throws Exception
     {
+        boolean has_cpu = false;
+        boolean has_elapsed = false;
+
         Token token = new Token();
         line = extractName(line);
 
@@ -83,12 +86,14 @@ public class JThread
         {
             cpu = getTime(token.token.substring("cpu=".length()));
             line = extractToken(line, token);
+            has_cpu = true;
         }
 
         if (token.token.startsWith("elapsed="))
         {
             elapsed_max = elapsed = getTime(token.token.substring("elapsed=".length()));
             line = extractToken(line, token);
+            has_elapsed = true;
         }
 
         if (token.token.startsWith("tid="))
@@ -115,6 +120,11 @@ public class JThread
         else if (line.startsWith("in "))
         {
             state2 = "waiting monitor";
+        }
+
+        if (!has_cpu || !has_elapsed)
+        {
+            throw new Exception("CPU usage data is missing");
         }
     }
 
