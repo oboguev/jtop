@@ -184,19 +184,19 @@ public class JThreads
 
         Collections.sort(threads, new SortByCpu());
 
-        String header = center("THREADS, CPU cores usage (%):", len_name) + "  " + center("HIST", len_c1);
-        if (prev != null)
-            header += "  " + center("CURR", len_c1);
-        header += "  " + center("COUNT", len_c3);
-        show.add(header);
-
-        header = repeat('=', len_name) + "  " + repeat('=', len_c1);
-        if (prev != null)
-            header += "  " + repeat('=', len_c1);
-        header += "  " + repeat('=', len_c3);
-        show.add(header);
-
         String sep = "  ";
+
+        String header = center("THREADS, CPU cores usage (%):", len_name) + sep + center("HIST", len_c1);
+        if (prev != null)
+            header += sep + center("CURR", len_c2);
+        header += sep + center("COUNT", len_c3);
+        show.add(header);
+
+        header = repeat('=', len_name) + sep + repeat('=', len_c1);
+        if (prev != null)
+            header += sep + repeat('=', len_c2);
+        header += sep + repeat('=', len_c3);
+        show.add(header);
 
         if (prev == null)
         {
