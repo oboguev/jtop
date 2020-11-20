@@ -88,6 +88,9 @@ public class JTop
 
             JThreads prev = null;
 
+            if (System.console() == null)
+                nograph = true;
+
             for (;;)
             {
                 StringBuilder sb = new StringBuilder();
