@@ -49,8 +49,6 @@ public class JTop
             CommandLine cmd = parser.parse(options, args, true);
 
             args = cmd.getArgs();
-            for (String s : args)
-                System.out.println(s);
 
             if (cmd.hasOption(OPT_HELP))
                 usage(options, 0);
@@ -78,7 +76,15 @@ public class JTop
             options = null;
 
             groupBy = new GroupBy();
-            groupBy.load();
+
+            if (cmd.hasOption(OPT_GROUPS))
+            {
+                groupBy.load(cmd.getOptionValue(OPT_GROUPS));
+            }
+            else
+            {
+                groupBy.loadDefault();
+            }
 
             JThreads prev = null;
 

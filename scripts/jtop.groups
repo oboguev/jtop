@@ -1,0 +1,53 @@
+#
+# JVM runtime threads
+#
+JVM runtime=Reference Handler
+JVM runtime=Finalizer
+JVM runtime=Signal Dispatcher
+JVM runtime=Service Thread
+JVM runtime=C1 CompilerThread[0-9]+
+JVM runtime=C2 CompilerThread[0-9]+
+JVM runtime=Sweeper thread
+JVM runtime=Common-Cleaner
+JVM runtime=Notification Thread
+JVM runtime=Attach Listener
+JVM runtime=VM Thread
+JVM runtime=VM Periodic Task Thread
+
+#
+# worker threads
+#
+worker=worker-[0-9]+
+worker=Worker-[0-9]+
+
+#
+# MYSQL threads
+#
+MYSQL=mysql-cj-abandoned-connection-cleanup
+
+#
+# YJP threads
+#
+YJP=YJPAgent-.*
+YJP=YJP-Plugin-RequestListener
+
+#
+# Garbage collection threads
+#
+GC=GC Thread#[0-9]+
+GC=G1 Main Marker
+GC=G1 Conc#[0-9]+
+GC=G1 Refine#[0-9]+
+GC=G1 Young RemSet Sampling
+GC=G1 Main Concurrent Mark GC Thread
+GC=G1 Concurrent Refinement Thread#[0-9]+
+GC=Gang worker#[0-9]+ (Parallel GC Threads)
+GC=Gang worker#[0-9]+ (G1 Parallel Marking Threads)
+GC=G1 Concurrent Refinement Thread#[0-9]+
+GC=Surrogate Locker Thread (Concurrent GC)
+
+#
+# Lightspeed threads
+#
+Lightspeed-event=Lightspeed\\.[0-9]+-event-[0-9]+
+Lightspeed-tenant=Lightspeed\\.[0-9]+-tenant-.*

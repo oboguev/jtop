@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import my.jtop.util.Util;
+
 public class GroupBy
 {
     private static class GroupMatcher
@@ -14,7 +16,25 @@ public class GroupBy
 
     private List<GroupMatcher> matchers = new ArrayList<GroupMatcher>();
 
-    public void load() throws Exception
+    public void load(String file) throws Exception
+    {
+        String content = Util.readFileAsUTF8(file);
+
+        for (String line : content.replace("\r", "").split("\n"))
+        {
+            line = line.trim();
+            if (line.equals("") || line.startsWith("#"))
+                continue;
+            int k = line.indexOf("=");
+            if (k == -1)
+                throw new Exception("Invalid file");
+            String group = line.substring(0, k);
+            String pattern = line.substring(k + 1);
+            addGroupPattern(group, pattern);
+        }
+    }
+
+    public void loadDefault() throws Exception
     {
         addGroupPattern("JVM runtime", "Reference Handler");
         addGroupPattern("JVM runtime", "Finalizer");

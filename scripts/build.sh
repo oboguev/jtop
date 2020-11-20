@@ -15,4 +15,6 @@ echo "Building ..."
 mvn --quiet clean compile assembly:single || onexit $?
 cp target/jtop-*.jar dist/jtop.jar
 cp scripts/jtop dist/jtop
+cp scripts/jtop.groups dist/jtop.groups
 dos2unix dist/jtop 
+dos2unix dist/jtop.groups
