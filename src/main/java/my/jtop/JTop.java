@@ -138,7 +138,9 @@ public class JTop
                 }
                 else
                 {
-                    for (long ts0 = now(); now() < ts0 + refresh * 1000;)
+                    boolean paused = false;
+
+                    for (long ts0 = now(); now() < ts0 + refresh * 1000 || paused;)
                     {
                         KeyStroke ks = terminal.pollInput();
                         if (ks == null)
@@ -160,6 +162,10 @@ public class JTop
                             {
                                 stop = true;
                                 break;
+                            }
+                            else if (c == ' ')
+                            {
+                                paused = !paused;
                             }
                         }
                     }
