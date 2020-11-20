@@ -1,6 +1,8 @@
 package my.jtop;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,16 +127,113 @@ public class JThreads
             }
             else
             {
-                jt.diff_cpu -= jtp.cpu;
-                jt.diff_elapsed -= jtp.elapsed;
-                jt.diff_elapsed_max -= jtp.elapsed_max;
+                jt.diff_cpu = jtp.cpu - jtp.cpu;
+                jt.diff_elapsed = jt.elapsed - jtp.elapsed;
+                jt.diff_elapsed_max = jt.elapsed_max - jtp.elapsed_max;
             }
+        }
+    }
+
+    private static class SortByCpu implements Comparator<JThread>
+    {
+        @Override
+        public int compare(JThread jt1, JThread jt2)
+        {
+            if (jt1.cpu > jt2.cpu)
+                return -1;
+            else if (jt1.cpu < jt2.cpu)
+                return 1;
+            else
+                return 0;
         }
     }
 
     public List<String> show(JThreads prev) throws Exception
     {
         List<String> show = new ArrayList<String>();
+
+        double max_elapsed = 0;
+        double max_diff_elapsed = 0;
+        int len_name = 0;
+        int len_c1 = "HIST".length();
+        int len_c2 = "CURR".length();
+
+        for (JThread jt : threads)
+        {
+            max_elapsed = Math.max(jt.elapsed, max_elapsed);
+            max_diff_elapsed = Math.max(jt.diff_elapsed, max_diff_elapsed);
+            len_name = Math.max(jt.name.length(), len_name);
+
+            String s = String.format("%.1f", 100.0 * jt.cpu / max_elapsed);
+            len_c1 = Math.max(s.length(), len_c1);
+
+            if (prev != null)
+            {
+                s = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
+                len_c2 = Math.max(s.length(), len_c2);
+            }
+        }
+
+        Collections.sort(threads, new SortByCpu());
+
+        String header = center("THREADS, CPU cores usage (%):", len_name) + "  " + center("HIST", len_c1);
+        if (prev != null)
+            header += "  " + center("CURR", len_c1);
+        show.add(header);
+
+        header = repeat('=', len_name) + "  " + repeat('=', len_c1);
+        if (prev != null)
+            header += "  " + repeat('=', len_c1);
+        show.add(header);
+
+        if (prev == null)
+        {
+            for (JThread jt : threads)
+            {
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f",
+                                       jt.name,
+                                       100.0 * jt.cpu / max_elapsed));
+            }
+        }
+        else
+        {
+            for (JThread jt : threads)
+            {
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %" + len_c2 + ".1f",
+                                       jt.name,
+                                       100.0 * jt.cpu / max_elapsed,
+                                       100.0 * jt.diff_cpu / jt.diff_elapsed));
+            }
+        }
+
         return show;
+    }
+
+    private int flen(double f)
+    {
+        int len = 3;
+
+        while (f >= 10)
+        {
+            f /= 10;
+            len++;
+        }
+
+        return len;
+    }
+
+    private String repeat(char c, int width)
+    {
+        StringBuilder sb = new StringBuilder();
+        while (width-- > 0)
+            sb.append(c);
+        return sb.toString();
+    }
+
+    private String center(String s, int width)
+    {
+        s = repeat(' ', (width - s.length()) / 2) + s;
+        s = s + repeat(' ', width - s.length());
+        return s;
     }
 }

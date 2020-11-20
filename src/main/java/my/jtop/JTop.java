@@ -90,6 +90,8 @@ public class JTop
                 jts.diff(prev);
 
                 List<String> show = jts.show(prev);
+                for (String s : show)
+                    System.out.println(s);
 
                 if (refresh == 0)
                     break;

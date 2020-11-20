@@ -30,6 +30,7 @@ public class GroupBy
         addGroupPattern("JVM runtime", "VM Periodic Task Thread");
 
         addGroupPattern("worker", "worker-[0-9]+");
+        addGroupPattern("worker", "Worker-[0-9]+");
 
         addGroupPattern("MYSQL", "mysql-cj-abandoned-connection-cleanup");
 
