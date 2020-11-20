@@ -13,6 +13,7 @@ function onexit
 
 echo "Building ..."
 mvn --quiet clean compile assembly:single || onexit $?
+mkdir -p dist
 cp target/jtop-*.jar dist/jtop.jar
 cp scripts/jtop dist/jtop
 cp scripts/jtop.groups dist/jtop.groups
