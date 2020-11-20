@@ -157,6 +157,7 @@ public class JThreads
         int len_name = 0;
         int len_c1 = "HIST".length();
         int len_c2 = "CURR".length();
+        int len_c3 = "COUNT".length();
 
         for (JThread jt : threads)
         {
@@ -172,6 +173,8 @@ public class JThreads
                 s = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
                 len_c2 = Math.max(s.length(), len_c2);
             }
+
+            len_c1 = Math.max(width(jt.count), len_c3);
         }
 
         Collections.sort(threads, new SortByCpu());
@@ -179,43 +182,68 @@ public class JThreads
         String header = center("THREADS, CPU cores usage (%):", len_name) + "  " + center("HIST", len_c1);
         if (prev != null)
             header += "  " + center("CURR", len_c1);
+        header += "  " + center("COUNT", len_c3);
         show.add(header);
 
         header = repeat('=', len_name) + "  " + repeat('=', len_c1);
         if (prev != null)
             header += "  " + repeat('=', len_c1);
+        header += "  " + repeat('=', len_c3);
         show.add(header);
 
         if (prev == null)
         {
             for (JThread jt : threads)
             {
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f",
+                String count = "";
+                if (jt.count > 1)
+                    count = String.format("%" + len_c3 + "d", jt.count);
+
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %s",
                                        jt.name,
-                                       100.0 * jt.cpu / max_elapsed));
+                                       100.0 * jt.cpu / max_elapsed,
+                                       count));
             }
         }
         else
         {
             for (JThread jt : threads)
             {
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %" + len_c2 + ".1f",
+                String count = "";
+                if (jt.count > 1)
+                    count = String.format("%" + len_c3 + "d", jt.count);
+
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %" + len_c2 + ".1f  %s",
                                        jt.name,
                                        100.0 * jt.cpu / max_elapsed,
-                                       100.0 * jt.diff_cpu / jt.diff_elapsed));
+                                       100.0 * jt.diff_cpu / jt.diff_elapsed,
+                                       count));
             }
         }
 
         return show;
     }
 
-    private int flen(double f)
+    private int width(double f)
     {
         int len = 3;
 
         while (f >= 10)
         {
             f /= 10;
+            len++;
+        }
+
+        return len;
+    }
+
+    private int width(int i)
+    {
+        int len = 1;
+
+        while (i >= 10)
+        {
+            i /= 10;
             len++;
         }
 
