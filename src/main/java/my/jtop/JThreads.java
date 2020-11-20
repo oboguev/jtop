@@ -165,16 +165,17 @@ public class JThreads
             max_diff_elapsed_max = Math.max(jt.diff_elapsed_max, max_diff_elapsed_max);
             len_name = Math.max(jt.name.length(), len_name);
 
-            String s = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
-            len_c1 = Math.max(s.length(), len_c1);
+            String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
+            len_c1 = Math.max(c1.length(), len_c1);
 
             if (prev != null)
             {
-                s = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
-                len_c2 = Math.max(s.length(), len_c2);
+                String c2 = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
+                len_c2 = Math.max(c2.length(), len_c2);
             }
 
-            len_c1 = Math.max(width(jt.count), len_c3);
+            String c3 = String.format("%d", jt.count);
+            len_c1 = Math.max(c3.length(), len_c3);
         }
 
         Collections.sort(threads, new SortByCpu());
@@ -195,29 +196,32 @@ public class JThreads
         {
             for (JThread jt : threads)
             {
-                String count = "";
-                if (jt.count > 1)
-                    count = String.format("%" + len_c3 + "d", jt.count);
+                String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
+                String c2 = "";
+                String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %s",
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + "s  %" + len_c3 + "s",
                                        jt.name,
-                                       100.0 * jt.cpu / max_elapsed_max,
-                                       count));
+                                       c1,
+                                       c3));
             }
         }
         else
         {
             for (JThread jt : threads)
             {
-                String count = "";
-                if (jt.count > 1)
-                    count = String.format("%" + len_c3 + "d", jt.count);
+                String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
+                String c2 = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
+                String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + ".1f  %" + len_c2 + ".1f  %s",
+                if (jt.count > 1)
+                    c3 = String.format("%" + len_c3 + "d", jt.count);
+
+                show.add(String.format("%-" + len_name + "s  %" + len_c1 + "s   %" + len_c2 + "s  %" + len_c3 + "s",
                                        jt.name,
-                                       100.0 * jt.cpu / max_elapsed_max,
-                                       100.0 * jt.diff_cpu / jt.diff_elapsed,
-                                       count));
+                                       c1,
+                                       c2,
+                                       c3));
             }
         }
 
