@@ -124,7 +124,7 @@ public class JThread
 
         if (!has_cpu || !has_elapsed)
         {
-            throw new Exception("CPU usage data is missing");
+            throw new Exception("CPU usage data is missing (process uses old JDK?)");
         }
     }
 

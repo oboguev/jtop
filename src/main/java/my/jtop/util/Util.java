@@ -10,6 +10,13 @@ import java.nio.file.Paths;
 
 public class Util
 {
+    static public boolean True = true;
+    static public boolean False = false;
+
+    static public void noop()
+    {
+    }
+
     static public byte[] readFileAsByteArray(String path) throws Exception
     {
         return Files.readAllBytes(Paths.get(path));
@@ -70,6 +77,7 @@ public class Util
             }
             catch (Exception ex)
             {
+                noop();
             }
         }
     }
@@ -84,6 +92,7 @@ public class Util
             }
             catch (Exception ex)
             {
+                noop();
             }
         }
     }

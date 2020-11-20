@@ -1,0 +1,12 @@
+#!/bin/bash
+
+SCRIPTDIR=`dirname "${BASH_SOURCE[0]}"`
+SCRIPTDIR=`realpath -s $SCRIPTDIR`
+
+JTOP_CLASSPATH="$SCRIPTDIR/jtop.jar"
+
+if [ "$(uname -o)" == "Cygwin" ]; then
+    JTOP_CLASSPATH=`cygpath -wp "$JTOP_CLASSPATH"`
+fi
+
+$JAVA_HOME/bin/java $OPTS -cp $JTOP_CLASSPATH my.jtop.JTop "$@"

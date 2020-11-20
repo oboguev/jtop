@@ -232,8 +232,12 @@ public class JThreads
 
     private String center(String s, int width)
     {
-        s = repeat(' ', (width - s.length()) / 2) + s;
-        s = s + repeat(' ', width - s.length());
-        return s;
+        String xs;
+        xs = repeat(' ', (width - s.length()) / 2);
+        if (0 != ((width - s.length()) % 2))
+            xs += " ";
+        xs += s;
+        xs = xs + repeat(' ', width - xs.length());
+        return xs;
     }
 }

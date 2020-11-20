@@ -8,6 +8,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
+
 import my.jtop.util.Util;
 
 public class JTop
@@ -21,9 +26,14 @@ public class JTop
 
     private static final String OPT_GROUPS = "groups";
     private static final String OPT_HELP = "help";
+    private static final String OPT_NOGRAPH = "nograph";
 
     private int pid = 0;
     private int refresh = 0;
+
+    private Terminal terminal;
+    private Screen screen;
+    private boolean nograph = false;
 
     public void do_main(String[] args)
     {
@@ -32,18 +42,21 @@ public class JTop
         try
         {
             options.addOption(OPT_GROUPS, true, "thread group definition file");
+            options.addOption(OPT_NOGRAPH, false, "do not use graphics");
             options.addOption(OPT_HELP, false, "show help");
 
-            if (args.length == 0)
-                usage(options, 0);
-
             CommandLineParser parser = new DefaultParser();
-            CommandLine cmd = parser.parse(options, args);
+            CommandLine cmd = parser.parse(options, args, true);
+
+            args = cmd.getArgs();
+            for (String s : args)
+                System.out.println(s);
 
             if (cmd.hasOption(OPT_HELP))
-            {
                 usage(options, 0);
-            }
+
+            if (cmd.hasOption(OPT_NOGRAPH))
+                nograph = true;
 
             if (args.length == 2)
             {
@@ -90,8 +103,17 @@ public class JTop
                 jts.diff(prev);
 
                 List<String> show = jts.show(prev);
-                for (String s : show)
-                    System.out.println(s);
+
+                if (nograph)
+                {
+                    System.out.println("");
+                    for (String s : show)
+                        System.out.println(s);
+                }
+                else
+                {
+                    show(show);
+                }
 
                 if (refresh == 0)
                     break;
@@ -109,6 +131,21 @@ public class JTop
             }
             else
             {
+                try
+                {
+                    if (screen != null)
+                        screen.stopScreen();
+
+                    if (terminal != null)
+                    {
+                        terminal.exitPrivateMode();
+                        terminal.close();
+                    }
+                }
+                catch (Exception ex2)
+                {
+                    Util.noop();
+                }
                 ex.printStackTrace();
                 exit(1);
             }
@@ -118,7 +155,7 @@ public class JTop
     private void usage(Options options, int exitcode)
     {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(this.getClass().getName(), options);
+        formatter.printHelp(this.getClass().getName() + " [options] pid [refresh-rate]", options);
         exit(exitcode);
     }
 
@@ -127,5 +164,38 @@ public class JTop
         System.out.flush();
         System.err.flush();
         System.exit(exitcode);
+    }
+
+    private void show(List<String> show) throws Exception
+    {
+        // http://mabe02.github.io/lanterna/apidocs/3.0/index.html?overview-summary.html
+        // http://mabe02.github.io/lanterna/apidocs/3.0/com/googlecode/lanterna/screen/Screen.html
+        if (terminal == null)
+        {
+            terminal = new DefaultTerminalFactory().createTerminal();
+            // terminal.enterPrivateMode();
+            terminal.clearScreen();
+        }
+
+        if (screen == null)
+        {
+            screen = new TerminalScreen(terminal);
+            screen.startScreen();
+        }
+
+        screen.clear();
+
+        for (int row = 0; row < show.size(); row++)
+        {
+            String s = show.get(row);
+            for (int col = 0; col < s.length(); col++)
+            {
+                char c = s.charAt(col);
+                screen.setCharacter(col, row, new com.googlecode.lanterna.TextCharacter(c));
+            }
+        }
+
+        screen.refresh(Screen.RefreshType.DELTA);
+        terminal.flush();
     }
 }
