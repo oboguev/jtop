@@ -169,12 +169,12 @@ public class JThreads
         {
             len_name = Math.max(jt.name.length(), len_name);
 
-            String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
+            String c1 = String.format("%,.1f", 100.0 * jt.cpu / max_elapsed_max);
             len_c1 = Math.max(c1.length(), len_c1);
 
             if (prev != null)
             {
-                String c2 = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
+                String c2 = String.format("%,.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed_max);
                 len_c2 = Math.max(c2.length(), len_c2);
             }
 
@@ -202,7 +202,7 @@ public class JThreads
         {
             for (JThread jt : threads)
             {
-                String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
+                String c1 = String.format("%,.1f", 100.0 * jt.cpu / max_elapsed_max);
                 String c2 = "";
                 String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
@@ -213,8 +213,8 @@ public class JThreads
         {
             for (JThread jt : threads)
             {
-                String c1 = String.format("%.1f", 100.0 * jt.cpu / max_elapsed_max);
-                String c2 = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
+                String c1 = String.format("%,.1f", 100.0 * jt.cpu / max_elapsed_max);
+                String c2 = String.format("%,.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed_max);
                 String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
                 show.add(left(jt.name, len_name) + sep + right(c1, len_c1) + sep + right(c2, len_c2) + sep + right(c3, len_c3));
