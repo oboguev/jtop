@@ -192,6 +192,8 @@ public class JThreads
         header += "  " + repeat('=', len_c3);
         show.add(header);
 
+        String sep = "  ";
+
         if (prev == null)
         {
             for (JThread jt : threads)
@@ -200,10 +202,7 @@ public class JThreads
                 String c2 = "";
                 String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + "s  %" + len_c3 + "s",
-                                       jt.name,
-                                       c1,
-                                       c3));
+                show.add(left(jt.name, len_name) + sep + right(c1, len_c1) + sep + right(c3, len_c3));
             }
         }
         else
@@ -214,44 +213,21 @@ public class JThreads
                 String c2 = String.format("%.1f", 100.0 * jt.diff_cpu / jt.diff_elapsed);
                 String c3 = (jt.count <= 1) ? "" : String.format("%" + len_c3 + "d", jt.count);
 
-                if (jt.count > 1)
-                    c3 = String.format("%" + len_c3 + "d", jt.count);
-
-                show.add(String.format("%-" + len_name + "s  %" + len_c1 + "s   %" + len_c2 + "s  %" + len_c3 + "s",
-                                       jt.name,
-                                       c1,
-                                       c2,
-                                       c3));
+                show.add(left(jt.name, len_name) + sep + right(c1, len_c1) + sep + right(c2, len_c2) + sep + right(c3, len_c3));
             }
         }
 
         return show;
     }
 
-    private int width(double f)
+    private String left(String s, int width)
     {
-        int len = 3;
-
-        while (f >= 10)
-        {
-            f /= 10;
-            len++;
-        }
-
-        return len;
+        return s + repeat(' ', width - s.length());
     }
 
-    private int width(int i)
+    private String right(String s, int width)
     {
-        int len = 1;
-
-        while (i >= 10)
-        {
-            i /= 10;
-            len++;
-        }
-
-        return len;
+        return repeat(' ', width - s.length()) + s;
     }
 
     private String repeat(char c, int width)
