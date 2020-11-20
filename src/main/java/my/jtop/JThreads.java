@@ -179,7 +179,7 @@ public class JThreads
             }
 
             String c3 = String.format("%d", jt.count);
-            len_c1 = Math.max(c3.length(), len_c3);
+            len_c3 = Math.max(c3.length(), len_c3);
         }
 
         Collections.sort(threads, new SortByCpu());
