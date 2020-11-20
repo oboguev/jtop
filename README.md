@@ -20,7 +20,7 @@ $ jtop [-nograph] [-groups groupfile] pid [refresh-rate]
 
 JTop can optionally group threads into groups and display aggregate data for a group of threads, rather than for every individual thread. Grouping is defined by a file listing thread name patterns for each group. For the example file see ``jtop.groups``. If grouping file is not specified, basic hardwired defaults are used. These defaults will group JVM runtime threads, garbage collection threads and some other threads.
 
-For every group or thread, JTop will display its name, accumulated CPU usage over application run time, CPU usage over last refresh interval and the number of threads in a group.
+For every thread or thread group, JTop will display its name, accumulated CPU usage over application run time, CPU usage over last refresh interval and the number of threads in a group.
 
 Information is displayed only for currently existing threads, not for terminated threads.
 
