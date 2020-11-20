@@ -32,9 +32,13 @@ public class JThreads
             }
             else if (jt == null)
             {
-                if (threads.size() == 0 || s.startsWith("JNI global refs:"))
+                if (threads.size() == 0 || s.startsWith("JNI global refs:") || s.startsWith("JNI global references:"))
                 {
                     // ignore the line
+                }
+                else if (isExceptionLine(s))
+                {
+                    throw new Exception(s);
                 }
                 else
                 {
@@ -88,5 +92,49 @@ public class JThreads
         }
 
         return jts;
+    }
+
+    private boolean isExceptionLine(String s) throws Exception
+    {
+        return s.length() != 0 && s.charAt(0) != ' ' && s.contains("Exception");
+    }
+
+    public void diff(JThreads prev) throws Exception
+    {
+        if (prev == null)
+        {
+            for (JThread jt : threads)
+            {
+                jt.diff_cpu = jt.cpu;
+                jt.diff_elapsed = jt.elapsed;
+                jt.diff_elapsed_max = jt.elapsed_max;
+            }
+            return;
+        }
+
+        for (String tn : name2thread.keySet())
+        {
+            JThread jt = name2thread.get(tn);
+            JThread jtp = prev.name2thread.get(tn);
+
+            if (jtp == null)
+            {
+                jt.diff_cpu = jt.cpu;
+                jt.diff_elapsed = jt.elapsed;
+                jt.diff_elapsed_max = jt.elapsed_max;
+            }
+            else
+            {
+                jt.diff_cpu -= jtp.cpu;
+                jt.diff_elapsed -= jtp.elapsed;
+                jt.diff_elapsed_max -= jtp.elapsed_max;
+            }
+        }
+    }
+
+    public List<String> show(JThreads prev) throws Exception
+    {
+        List<String> show = new ArrayList<String>();
+        return show;
     }
 }

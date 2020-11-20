@@ -22,6 +22,10 @@ public class JThread
     public double elapsed_max = 0;
     public int count = 1;
 
+    public double diff_cpu = 0;
+    public double diff_elapsed = 0;
+    public double diff_elapsed_max = 0;
+
     public JThread()
     {
 
