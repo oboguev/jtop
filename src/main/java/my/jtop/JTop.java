@@ -8,6 +8,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -91,7 +93,7 @@ public class JTop
             if (System.console() == null)
                 nograph = true;
 
-            for (;;)
+            for (boolean stop = false; !stop;)
             {
                 StringBuilder sb = new StringBuilder();
                 String[] jcmd = { "jcmd", "" + pid, "Thread.print" };
@@ -125,9 +127,43 @@ public class JTop
                 }
 
                 if (refresh == 0)
-                    break;
+                {
+                    stop = true;
+                    continue;
+                }
 
-                Thread.sleep(refresh * 1000);
+                if (terminal == null)
+                {
+                    Thread.sleep(refresh * 1000);
+                }
+                else
+                {
+                    for (long ts0 = now(); now() < ts0 + refresh * 1000;)
+                    {
+                        KeyStroke ks = terminal.pollInput();
+                        if (ks == null)
+                        {
+                            Thread.sleep(100);
+                            continue;
+                        }
+
+                        if (ks.getKeyType() == KeyType.Escape)
+                        {
+                            stop = true;
+                            break;
+                        }
+
+                        if (ks.getKeyType() == KeyType.Character)
+                        {
+                            char c = ks.getCharacter().charValue();
+                            if (c == 'q' || c == 'Q')
+                            {
+                                stop = true;
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 prev = jts;
             }
@@ -206,5 +242,10 @@ public class JTop
 
         screen.refresh(Screen.RefreshType.DELTA);
         terminal.flush();
+    }
+
+    private long now()
+    {
+        return System.currentTimeMillis();
     }
 }
