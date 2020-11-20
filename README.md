@@ -22,6 +22,8 @@ JTop can optionally group threads into groups and display aggregate data for a g
 
 For every thread or thread group, JTop will display its name, accumulated CPU usage over application run time, CPU usage over last refresh interval and the number of threads in a group.
 
+CPU usage is displayed as percents of cores used. For example, if the thread or thread group uses 4 cores, JTop will display 400 for it.
+
 Information is displayed only for currently existing threads, not for terminated threads.
 
 If stdout is a tty, JTop will try to use graphic display (curses style), otherwise it will use plain text display. 
